@@ -9,6 +9,20 @@
 3. **Gallery View**: Scroll through saved dogs in a clean, grid-based interface.
 4. **Stats Dashboard**: See which breeds you love most with real-time charts.
 
+## Screenshots
+
+### Main Page
+
+<img src="https://raw.githubusercontent.com/blnkoff/barkboard/main/img/random_dog.png" alt="Main Page" width="400px">
+
+### Favorites View
+
+<img src="https://raw.githubusercontent.com/blnkoff/barkboard/main/img/favorite.png" alt="Favorites View" width="400px">
+
+### Stats Dashboard
+
+<img src="https://raw.githubusercontent.com/blnkoff/barkboard/main/img/stats.png" alt="Stats Dashboard" width="400px">
+
 ## 🛠️ Tech Stack
 
 * **[Streamlit](https://docs.streamlit.io/)** — Build data apps with pure Python, no frontend needed. ([docs.streamlit.io][1])
