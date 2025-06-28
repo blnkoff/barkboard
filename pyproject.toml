@@ -1,7 +1,7 @@
 [project]
 name = "barkboard"
 version = "0.1.0"
-description = "Lightweight web application that retrieves random dog images from the Dog CEO API, displays them in an interactive interface, and lets users save their favorite photos."
+description = "BarkBoard is like Pinterest for dogs—discover and collect adorable dog photos in a visually rich, interactive gallery."
 authors = [
     {name = "Alexey",email = "axbelenkov@gmail.com"}
 ]

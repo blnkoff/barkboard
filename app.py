@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 from sqlmodel import Session, select
-from client.api import DogImage, Breed
+from client.api import DogImage, Breed, manager, router
+from sensei import Client
 from models import FavoriteDog, engine
 
 
@@ -9,42 +10,48 @@ def show_random_tab():
     """
     Displays the Random Dog tab: fetch and save random or breed-specific dogs.
     """
-    st.header("🎲 Random Dog")
+    # Using client with manager provides reusing HTTP connections for better performance
+    with Client(base_url=router.base_url) as client: 
+        manager.set(client)
+        
+        st.header("🎲 Random Dog")
 
-    # Fetch a new random dog
-    if st.button("Show random dog", key="btn_random"):
-        st.session_state.random_dog = DogImage.random()
-        st.session_state.breed_dog = None  # Clear breed-specific
+        # Fetch a new random dog
+        if st.button("Show random dog", key="btn_random"):
+            st.session_state.random_dog = DogImage.random()
+            st.session_state.breed_dog = None  # Clear breed-specific
 
-    if st.session_state.random_dog:
-        dog = st.session_state.random_dog
-        caption = f"Random {dog.breed}" + (f" ({dog.sub_breed})" if dog.sub_breed else "")
-        st.image(dog.url, caption=caption, use_container_width=True)
+        if st.session_state.random_dog:
+            dog = st.session_state.random_dog
+            caption = f"Random {dog.breed}" + (f" ({dog.sub_breed})" if dog.sub_breed else "")
+            st.image(dog.url, caption=caption, use_container_width=True)
 
-        if st.button("Save to favorites", key="save_random"):
-            save_favorite(dog.url)
-            st.success("Random dog saved to favorites!")
-            st.session_state.random_dog = None
+            if st.button("Save to favorites", key="save_random"):
+                save_favorite(dog.url)
+                st.success("Random dog saved to favorites!")
+                st.session_state.random_dog = None
 
-    # Breed-specific section
-    st.subheader("Or choose by breed")
-    breeds_dict = Breed.get_breeds()
-    breed_list = sorted(breeds_dict.keys())
-    selected_breed = st.selectbox("Select breed", breed_list, key="select_breed")
+        # Breed-specific section
+        st.subheader("Or choose by breed")
+        breeds_dict = Breed.get_breeds()
+        breed_list = sorted(breeds_dict.keys())
+        selected_breed = st.selectbox("Select breed", breed_list, key="select_breed")
 
-    if st.button("Show dog by breed", key="btn_breed"):
-        st.session_state.breed_dog = DogImage.random(breed=selected_breed)
-        st.session_state.random_dog = None  # Clear random
+        if st.button("Show dog by breed", key="btn_breed"):
+            st.session_state.breed_dog = DogImage.random(breed=selected_breed)
+            st.session_state.random_dog = None  # Clear random
 
-    if st.session_state.breed_dog:
-        dog = st.session_state.breed_dog
-        caption = dog.breed + (f" ({dog.sub_breed})" if dog.sub_breed else "")
-        st.image(dog.url, caption=caption, use_container_width=True)
+        if st.session_state.breed_dog:
+            dog = st.session_state.breed_dog
+            caption = dog.breed + (f" ({dog.sub_breed})" if dog.sub_breed else "")
+            st.image(dog.url, caption=caption, use_container_width=True)
 
-        if st.button("Save to favorites", key="save_breed"):
-            save_favorite(dog.url)
-            st.success("Breed dog saved to favorites!")
-            st.session_state.breed_dog = None
+            if st.button("Save to favorites", key="save_breed"):
+                save_favorite(dog.url)
+                st.success("Breed dog saved to favorites!")
+                st.session_state.breed_dog = None
+                
+        manager.pop()
 
 
 def show_favorites_tab():
