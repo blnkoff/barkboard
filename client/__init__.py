@@ -1,1 +1,1 @@
-from .api import DogImage, manager
+from .api import DogImage, Breed, manager, router
